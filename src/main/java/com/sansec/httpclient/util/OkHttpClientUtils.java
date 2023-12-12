@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.SocketFactory;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.*;
@@ -21,7 +22,7 @@ public class OkHttpClientUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(OkHttpClientUtils.class);
 
-    private static OkHttpClient client;
+    private static volatile OkHttpClient client;
 
     private static final String DEFAULT_MEDIA_TYPE = "application/json; charset=utf-8";
 
@@ -46,6 +47,7 @@ public class OkHttpClientUtils {
                             .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
                             .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
 //                            .connectionPool(new ConnectionPool(300, 30, TimeUnit.SECONDS))
+//                            .protocols(Collections.singletonList(Protocol.HTTP_1_1))
                             .build();
                 }
             }
@@ -88,7 +90,7 @@ public class OkHttpClientUtils {
                     .headers(new Headers.Builder()
                             .add("Content-type", "application/json; charset=utf-8")
 //                            .add("Connection", "Close")
-                            .add("X-SW-ORIGIN", "web_console")
+//                            .add("X-SW-ORIGIN", "web_console")
                             .build())
                     .url(url)
                     .post(RequestBody.create(createMediaType, postBody))
